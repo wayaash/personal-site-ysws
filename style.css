@@ -27,3 +27,14 @@ footer{margin-top:18px;color:var(--muted);font-size:0.95rem;text-align:center}
 .trail{position:fixed;pointer-events:none;z-index:5;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle,#fff,var(--blood));mix-blend-mode:screen;opacity:0.9;transform:translate(-50%,-50%)}
 @media (max-width:980px){.term-inner{grid-template-columns:1fr}.side{order:-1;flex-direction:row;justify-content:space-between;padding:12px}.moon{width:110px;height:110px}.main{padding:12px}}
 .bloop{color:var(--blood);font-weight:700;font-style:italic}
+//next things for my future plan//
+
+.trail {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.8s ease;
+}
