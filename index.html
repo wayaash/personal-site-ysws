@@ -7,59 +7,56 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<svg id="smoke-layer" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-<defs>
-<linearGradient id="sg1" x1="0" x2="1">
-<stop offset="0" stop-color="#ff0f2d" stop-opacity="0.06"/>
-<stop offset="1" stop-color="#000" stop-opacity="0"/>
-</linearGradient>
-</defs>
-<g>
-<ellipse cx="200" cy="160" rx="520" ry="180" fill="url(#sg1)" opacity="0.95"/>
-<ellipse cx="1400" cy="740" rx="480" ry="160" fill="#000" opacity="0.32"/>
-</g>
-</svg>
+<div class="bg-layer">
+  <img src="t0266frgm-u093j4lkle8-e97dd9819cb9-512-blueprintified_480.png" alt="blueprint" class="blueprint">
+  <svg id="smoke-layer" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="sg1" x1="0" x2="1">
+        <stop offset="0" stop-color="#ff0f2d" stop-opacity="0.06"/>
+        <stop offset="1" stop-color="#000" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <g>
+      <ellipse cx="200" cy="160" rx="520" ry="180" fill="url(#sg1)" opacity="0.95"/>
+      <ellipse cx="1400" cy="740" rx="480" ry="160" fill="#000" opacity="0.32"/>
+    </g>
+  </svg>
+</div>
 
 <div class="terminal-wrap">
-<div class="term-inner">
-<div class="main" id="mainBox">
-<h1>/usr/bin/Yash Raghuwanshi</h1>
-<img id="blueprint" src="t0266frgm-u093j4lkle8-e97dd9819cb9-512-blueprintified_480.png" alt="">
-<p class="lead muted">Chaos, smoke, particles, shaders. Mostly working.</p>
-<div class="line"><span class="prompt">$</span> <span id="typed">Booting modules…</span></div>
-<div class="line"><span class="prompt">$</span> Status: ready — press <strong>B</strong> for blooper</div>
-<div class="controls">
-<button class="btn" id="chaos">Invoke chaos</button>
-<button class="btn alt" id="copy">Copy email</button>
-<a class="btn" href="https://github.com/wayaash" target="_blank">GITHUB</a>
-</div>
-
-<section id="work" style="margin-top:16px">
-<div class="line">• lava-frag shader (WebGL, may crash GPU 💀)</div>
-<div class="line">• particles that dance to imaginary audio</div>
-<div class="line">• tiny website that insults visitors politely</div>
-</section>
-
-<section id="about" style="margin-top:12px">
-<div class="line">Age: 15 • probably debugging something</div>
-<div class="line">Bio: Hi, I’m Yash Raghuwanshi, the hacker-vampire type. I build weird projects, break things, and sometimes fix them. Part of <a href="https://hackclub.com" target="_blank">Hack Club</a> and <a href="https://vidisha.hackclub.com/" target="_blank">Hack Club Vidisha</a>.</div>
-<div class="line bloop">Press <strong>B</strong> for chaos… or regret.</div>
-</section>
-
-<footer>crafted with overdose of caffeinechat & midnight vibes — Yash</footer>
-</div>
-
-<aside class="side">
-<div class="moon"></div>
-<canvas id="shader-canvas" width="320" height="140"></canvas>
-<canvas id="particle-canvas" width="320" height="120"></canvas>
-<div style="width:100%;text-align:center;color:#9aa0a6;font-size:0.95rem">Interactive • mobile-friendly • press 'P' for perf</div>
-</aside>
-</div>
+  <div class="term-inner">
+    <div class="main">
+      <h1>/usr/bin/Yash Raghuwanshi</h1>
+      <p class="lead muted">Chaos, smoke, particles, shaders. Mostly working.</p>
+      <div class="line"><span class="prompt">$</span> <span id="typed">Booting modules…</span></div>
+      <div class="line"><span class="prompt">$</span> Status: ready — press <strong>B</strong> for blooper</div>
+      <div class="controls">
+        <button class="btn" id="chaos">Invoke chaos</button>
+        <button class="btn alt" id="copy">Copy email</button>
+        <a class="btn" href="https://github.com/wayaash" target="_blank">GITHUB</a>
+      </div>
+      <section id="work" style="margin-top:16px">
+        <div class="line">• lava-frag shader (WebGL, may crash GPU 💀)</div>
+        <div class="line">• particles that dance to imaginary audio</div>
+        <div class="line">• tiny website that insults visitors politely</div>
+      </section>
+      <section id="about" style="margin-top:12px">
+        <div class="line">Age: 15 • probably debugging something</div>
+        <div class="line">Bio: Hi, I’m Yash Raghuwanshi, the hacker-vampire type. I build weird projects, break things, and sometimes fix them. Part of <a href="https://hackclub.com" target="_blank">Hack Club</a> and <a href="https://vidisha.hackclub.com/" target="_blank">Hack Club Vidisha</a>.</div>
+        <div class="line bloop">Press <strong>B</strong> for chaos… or regret.</div>
+      </section>
+      <footer>crafted with overdose of caffeinechat & midnight vibes — Yash</footer>
+    </div>
+    <aside class="side">
+      <div class="moon"></div>
+      <canvas id="shader-canvas" width="320" height="140"></canvas>
+      <canvas id="particle-canvas" width="320" height="120"></canvas>
+      <div class="note">Interactive • mobile-friendly • press 'P' for perf</div>
+    </aside>
+  </div>
 </div>
 
 <div id="trail-root"></div>
-<div id="log-feed"></div>
 <script src="script.js"></script>
 </body>
 </html>
