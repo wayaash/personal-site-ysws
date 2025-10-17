@@ -81,3 +81,65 @@ document.addEventListener('mousemove', (e) => {
 const shaderCanvas = document.getElementById('shader-canvas').getContext('2d')
 const particleCanvas = document.getElementById('particle-canvas').getContext('2d')
 
+function chaosBurst() {
+  for (let i = 0; i < 30; i++) {
+    const s = document.createElement('span')
+    s.innerText = '*'
+    s.style.position = 'fixed'
+    s.style.left = Math.random() * window.innerWidth + 'px'
+    s.style.top = Math.random() * window.innerHeight + 'px'
+    s.style.color = `hsl(${Math.random() * 360},100%,70%)`
+    s.style.fontSize = 10 + Math.random() * 20 + 'px'
+    s.style.opacity = 0.7
+    s.style.transition = 'transform 0.8s ease, opacity 1s'
+    document.body.appendChild(s)
+    setTimeout(() => {
+      s.style.transform = 'translateY(-80px) scale(0)'
+      s.style.opacity = 0
+    }, 50)
+    setTimeout(() => s.remove(), 1000)
+  }
+}
+
+function animate() {
+  shaderCanvas.clearRect(0, 0, shaderCanvas.canvas.width, shaderCanvas.canvas.height)
+  particleCanvas.clearRect(0, 0, particleCanvas.canvas.width, particleCanvas.canvas.height)
+  for (let j = 0; j < 10; j++) {
+    shaderCanvas.fillStyle = 'hsl(' + Math.random() * 360 + ',70%,60%)'
+    shaderCanvas.fillRect(Math.random() * shaderCanvas.canvas.width, Math.random() * shaderCanvas.canvas.height, 2, 2)
+  }
+  for (let j = 0; j < 20; j++) {
+    particleCanvas.beginPath()
+    particleCanvas.fillStyle = 'hsl(' + Math.random() * 360 + ',100%,50%)'
+    particleCanvas.arc(Math.random() * particleCanvas.canvas.width, Math.random() * particleCanvas.canvas.height, Math.random() * 3, 0, Math.PI * 2)
+    particleCanvas.fill()
+  }
+  requestAnimationFrame(animate)
+}
+animate()
+
+function glitchAlert(msg) {
+  const box = document.createElement('div')
+  box.innerText = msg
+  box.style.position = 'fixed'
+  box.style.left = '50%'
+  box.style.top = '50%'
+  box.style.transform = 'translate(-50%, -50%) scale(1)'
+  box.style.background = '#000'
+  box.style.color = '#ff0f2d'
+  box.style.padding = '20px 40px'
+  box.style.fontFamily = 'monospace'
+  box.style.border = '2px solid #ff0f2d'
+  box.style.zIndex = 9999
+  box.style.textShadow = '0 0 8px #ff0f2d'
+  document.body.appendChild(box)
+  box.animate(
+    [
+      { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+      { transform: 'translate(-48%, -52%) scale(1.05)', opacity: 0.8 },
+      { transform: 'translate(-50%, -50%) scale(1)', opacity: 0 }
+    ],
+    { duration: 900, easing: 'ease-out' }
+  )
+  setTimeout(() => box.remove(), 1000)
+}
