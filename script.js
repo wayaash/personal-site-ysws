@@ -38,3 +38,46 @@ function flickerLoop() {
   }
   setTimeout(flickerLoop, 200 + Math.random() * 300)
 }
+
+chaosBtn.addEventListener('click', () => {
+  document.body.style.transition = 'filter 0.2s ease'
+  document.body.style.filter = 'hue-rotate(' + Math.random() * 360 + 'deg)'
+  document.body.style.transform = 'scale(1.02)'
+  setTimeout(() => {
+    document.body.style.filter = 'none'
+    document.body.style.transform = 'none'
+  }, 800)
+  chaosBurst()
+})
+
+copyBtn.addEventListener('click', () => {
+  navigator.clipboard.writeText('gamerzinfo72@gmail.com')
+  copyBtn.innerText = 'Copied ⚡'
+  setTimeout(() => (copyBtn.innerText = 'Copy email'), 1500)
+})
+
+document.addEventListener('keydown', (e) => {
+  if (e.key.toLowerCase() === 'b') {
+    const msg = bloopers[Math.floor(Math.random() * bloopers.length)]
+    glitchAlert(msg)
+  }
+})
+
+// trail magic
+const trails = []
+document.addEventListener('mousemove', (e) => {
+  const dot = document.createElement('div')
+  dot.className = 'trail'
+  dot.style.left = e.clientX + 'px'
+  dot.style.top = e.clientY + 'px'
+  dot.style.background = `hsl(${Math.random() * 360},100%,60%)`
+  dot.style.boxShadow = '0 0 10px ' + dot.style.background
+  trailRoot.appendChild(dot)
+  trails.push(dot)
+  setTimeout(() => dot.remove(), 1000)
+})
+
+// shader illusion
+const shaderCanvas = document.getElementById('shader-canvas').getContext('2d')
+const particleCanvas = document.getElementById('particle-canvas').getContext('2d')
+
