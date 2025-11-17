@@ -16,9 +16,11 @@ let bootMsg = 'Booting modules…'
 let idx = 0
 let typingDone = false
 
+typedElement.textContent = ''
+
 function typeEffect() {
   if (idx < bootMsg.length) {
-    typedElement.innerHTML += bootMsg.charAt(idx)
+    typedElement.textContent += bootMsg.charAt(idx)
     idx++
     setTimeout(typeEffect, 80)
   } else {
@@ -51,12 +53,46 @@ chaosBtn.addEventListener('click', () => {
 })
 
 copyBtn.addEventListener('click', () => {
-  navigator.clipboard.writeText('gamerzinfo72@gmail.com')
-  copyBtn.innerText = 'Copied ⚡'
-  setTimeout(() => (copyBtn.innerText = 'Copy email'), 1500)
+  const email = 'gamerzinfo72@gmail.com'
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(email).then(() => {
+      copyBtn.innerText = 'Copied ⚡'
+      setTimeout(() => (copyBtn.innerText = 'Copy email'), 1500)
+    }).catch(() => {
+      fallbackCopy(email)
+    })
+  } else {
+    fallbackCopy(email)
+  }
 })
 
+function fallbackCopy(text) {
+  try {
+    const ta = document.createElement('textarea')
+    ta.value = text
+    ta.style.position = 'fixed'
+    ta.style.left = '-9999px'
+    document.body.appendChild(ta)
+    ta.select()
+    document.execCommand('copy')
+    ta.remove()
+    copyBtn.innerText = 'Copied ⚡'
+    setTimeout(() => (copyBtn.innerText = 'Copy email'), 1500)
+  } catch (e) {
+    copyBtn.innerText = 'Copy failed'
+    setTimeout(() => (copyBtn.innerText = 'Copy email'), 1500)
+  }
+}
+
+function isTyping(ev) {
+  const target = ev.target || ev.srcElement
+  if (!target) return false
+  const tag = target.tagName ? target.tagName.toLowerCase() : ''
+  return tag === 'input' || tag === 'textarea' || target.isContentEditable
+}
+
 document.addEventListener('keydown', (e) => {
+  if (isTyping(e)) return
   if (e.key.toLowerCase() === 'b') {
     const msg = bloopers[Math.floor(Math.random() * bloopers.length)]
     glitchAlert(msg)
@@ -76,8 +112,26 @@ document.addEventListener('mousemove', (e) => {
   setTimeout(() => dot.remove(), 1000)
 })
 
-const shaderCanvas = document.getElementById('shader-canvas').getContext('2d')
-const particleCanvas = document.getElementById('particle-canvas').getContext('2d')
+const shaderCanvasEl = document.getElementById('shader-canvas')
+const particleCanvasEl = document.getElementById('particle-canvas')
+const shaderCanvas = shaderCanvasEl.getContext('2d')
+const particleCanvas = particleCanvasEl.getContext('2d')
+
+function resizeCanvases() {
+  const ratio = window.devicePixelRatio || 1
+  ;[shaderCanvasEl, particleCanvasEl].forEach(c => {
+    const w = c.clientWidth
+    const h = c.clientHeight
+    c.width = Math.floor(w * ratio)
+    c.height = Math.floor(h * ratio)
+    c.style.width = w + 'px'
+    c.style.height = h + 'px'
+  })
+  shaderCanvas.setTransform(ratio, 0, 0, ratio, 0, 0)
+  particleCanvas.setTransform(ratio, 0, 0, ratio, 0, 0)
+}
+window.addEventListener('resize', resizeCanvases)
+resizeCanvases()
 
 function chaosBurst() {
   for (let i = 0; i < 30; i++) {
@@ -100,16 +154,16 @@ function chaosBurst() {
 }
 
 function animate() {
-  shaderCanvas.clearRect(0, 0, shaderCanvas.canvas.width, shaderCanvas.canvas.height)
-  particleCanvas.clearRect(0, 0, particleCanvas.canvas.width, particleCanvas.canvas.height)
+  shaderCanvas.clearRect(0, 0, shaderCanvasEl.width, shaderCanvasEl.height)
+  particleCanvas.clearRect(0, 0, particleCanvasEl.width, particleCanvasEl.height)
   for (let j = 0; j < 10; j++) {
     shaderCanvas.fillStyle = 'hsl(' + Math.random() * 360 + ',70%,60%)'
-    shaderCanvas.fillRect(Math.random() * shaderCanvas.canvas.width, Math.random() * shaderCanvas.canvas.height, 2, 2)
+    shaderCanvas.fillRect(Math.random() * shaderCanvasEl.width, Math.random() * shaderCanvasEl.height, 2, 2)
   }
   for (let j = 0; j < 20; j++) {
     particleCanvas.beginPath()
     particleCanvas.fillStyle = 'hsl(' + Math.random() * 360 + ',100%,50%)'
-    particleCanvas.arc(Math.random() * particleCanvas.canvas.width, Math.random() * particleCanvas.canvas.height, Math.random() * 3, 0, Math.PI * 2)
+    particleCanvas.arc(Math.random() * particleCanvasEl.width, Math.random() * particleCanvasEl.height, Math.random() * 3, 0, Math.PI * 2)
     particleCanvas.fill()
   }
   requestAnimationFrame(animate)
@@ -124,12 +178,15 @@ function glitchAlert(msg) {
   box.style.top = '50%'
   box.style.transform = 'translate(-50%, -50%) scale(1)'
   box.style.background = '#000'
-  box.style.color = '#ff0f2d'
+  box.style.color = '#ff3b59'
   box.style.padding = '20px 40px'
   box.style.fontFamily = 'monospace'
-  box.style.border = '2px solid #ff0f2d'
+  box.style.border = '2px solid #ff3b59'
   box.style.zIndex = 9999
-  box.style.textShadow = '0 0 8px #ff0f2d'
+  box.style.textShadow = '0 0 8px #ff3b59'
+  box.style.pointerEvents = 'none'
+  box.setAttribute('role', 'status')
+  box.setAttribute('aria-live', 'polite')
   document.body.appendChild(box)
   box.animate(
     [
@@ -147,79 +204,116 @@ const miniTerm = document.getElementById('mini-terminal')
 const miniClose = document.getElementById('mini-close')
 const miniInput = document.getElementById('mini-input')
 const miniBody = document.getElementById('mini-body')
+const miniHeader = document.getElementById('mini-header')
 
 function showMini() {
+  if (window.innerWidth <= 600) {
+    miniTerm.style.left = ''
+    miniTerm.style.top = ''
+    miniTerm.style.right = '12px'
+    miniTerm.style.bottom = '84px'
+    miniTerm.style.transform = 'none'
+  } else {
+    const pos = JSON.parse(localStorage.getItem('mini-pos') || 'null')
+    if (pos && typeof pos.left === 'number' && typeof pos.top === 'number') {
+      miniTerm.style.left = pos.left + 'px'
+      miniTerm.style.top = pos.top + 'px'
+      miniTerm.style.transform = 'translate(0,0)'
+      miniTerm.style.right = ''
+      miniTerm.style.bottom = ''
+    } else {
+      miniTerm.style.left = '50%'
+      miniTerm.style.top = '50%'
+      miniTerm.style.transform = 'translate(-50%,-50%)'
+    }
+  }
   miniTerm.classList.remove('mini-hidden')
   miniInput.focus()
-  const pos = JSON.parse(localStorage.getItem('mini-pos') || 'null')
-  if (pos) {
-    miniTerm.style.left = pos.left
-    miniTerm.style.top = pos.top
-    miniTerm.style.transform = 'translate(0,0)'
-  }
 }
+
 function hideMini() {
   miniTerm.classList.add('mini-hidden')
 }
+
 yTrigger.addEventListener('click', showMini)
+
 document.addEventListener('keydown', e => {
+  if (isTyping(e)) return
   if (e.key.toLowerCase() === 'y') showMini()
 })
-miniClose.addEventListener('click', hideMini)
+
+miniClose.addEventListener('click', e => {
+  e.stopPropagation()
+  hideMini()
+})
+
+miniClose.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.stopPropagation()
+    hideMini()
+  }
+})
 
 let isDragging = false
 let dragOffsetX = 0
 let dragOffsetY = 0
 
-miniTerm.addEventListener('mousedown', e => {
+miniHeader.addEventListener('mousedown', e => {
+  if (e.button !== 0) return
+  if (e.target === miniClose || miniClose.contains(e.target)) return
   isDragging = true
-  dragOffsetX = e.clientX - miniTerm.getBoundingClientRect().left
-  dragOffsetY = e.clientY - miniTerm.getBoundingClientRect().top
+  const rect = miniTerm.getBoundingClientRect()
+  dragOffsetX = e.clientX - rect.left
+  dragOffsetY = e.clientY - rect.top
   miniTerm.style.transition = 'none'
 })
+
 document.addEventListener('mousemove', e => {
   if (!isDragging) return
   const left = e.clientX - dragOffsetX
   const top = e.clientY - dragOffsetY
-  miniTerm.style.left = left + 'px'
-  miniTerm.style.top = top + 'px'
+  const clampedLeft = Math.max(8, Math.min(left, window.innerWidth - miniTerm.offsetWidth - 8))
+  const clampedTop = Math.max(8, Math.min(top, window.innerHeight - miniTerm.offsetHeight - 8))
+  miniTerm.style.left = clampedLeft + 'px'
+  miniTerm.style.top = clampedTop + 'px'
   miniTerm.style.transform = 'translate(0,0)'
 })
+
 document.addEventListener('mouseup', () => {
   if (!isDragging) return
   isDragging = false
-  localStorage.setItem('mini-pos', JSON.stringify({ left: miniTerm.style.left, top: miniTerm.style.top }))
   miniTerm.style.transition = ''
+  const rect = miniTerm.getBoundingClientRect()
+  localStorage.setItem('mini-pos', JSON.stringify({ left: Math.round(rect.left), top: Math.round(rect.top) }))
 })
 
 miniInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') {
     const cmd = miniInput.value.trim().toLowerCase()
+    const el = document.createElement('div')
+    el.className = 'mline'
     if (cmd === 'help') {
-      const el = document.createElement('div')
-      el.className = 'mline'
       el.textContent = 'help: commands: help | stats | cheer'
-      miniBody.appendChild(el)
-      miniBody.scrollTop = miniBody.scrollHeight
     } else if (cmd === 'stats') {
-      const el = document.createElement('div')
-      el.className = 'mline'
       el.textContent = 'matches: 48 • wins: 34 • captaincies: 2'
-      miniBody.appendChild(el)
-      miniBody.scrollTop = miniBody.scrollHeight
     } else if (cmd === 'cheer') {
-      const el = document.createElement('div')
-      el.className = 'mline'
       el.textContent = 'You cheer loudly. Teammates respond with echo.'
-      miniBody.appendChild(el)
-      miniBody.scrollTop = miniBody.scrollHeight
     } else {
-      const el = document.createElement('div')
-      el.className = 'mline'
       el.textContent = 'Unknown command: ' + cmd
-      miniBody.appendChild(el)
-      miniBody.scrollTop = miniBody.scrollHeight
     }
+    miniBody.appendChild(el)
+    miniBody.scrollTop = miniBody.scrollHeight
     miniInput.value = ''
+  }
+})
+
+window.addEventListener('load', () => {
+  const pos = JSON.parse(localStorage.getItem('mini-pos') || 'null')
+  if (pos && typeof pos.left === 'number' && typeof pos.top === 'number') {
+    const left = Math.max(8, Math.min(pos.left, window.innerWidth - 64))
+    const top = Math.max(8, Math.min(pos.top, window.innerHeight - 64))
+    miniTerm.style.left = left + 'px'
+    miniTerm.style.top = top + 'px'
+    miniTerm.style.transform = 'translate(0,0)'
   }
 })
