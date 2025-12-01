@@ -208,11 +208,11 @@ const miniHeader = document.getElementById('mini-header')
 
 function showMini() {
   if (window.innerWidth <= 600) {
-    miniTerm.style.left = ''
+    miniTerm.style.left = '50%'
+    miniTerm.style.right = ''
     miniTerm.style.top = ''
-    miniTerm.style.right = '12px'
-    miniTerm.style.bottom = '84px'
-    miniTerm.style.transform = 'none'
+    miniTerm.style.bottom = '80px'
+    miniTerm.style.transform = 'translate(-50%,0)'
   } else {
     const pos = JSON.parse(localStorage.getItem('mini-pos') || 'null')
     if (pos && typeof pos.left === 'number' && typeof pos.top === 'number') {
