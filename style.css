@@ -5,9 +5,10 @@
   --blood:#ff3b59;
   --muted:#9aa0a6;
   --link:#ff6b9a;
+  --panel:#050506;
 }
 
-html,body{
+body{
   height:100%;
   margin:0;
   font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,'Courier New',monospace;
@@ -15,17 +16,25 @@ html,body{
   color:var(--neon);
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
+  position:relative;
 }
 
 *{
   box-sizing:border-box;
 }
 
+#starfield{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+}
+
 #smoke-layer{
   position:fixed;
   inset:0;
   pointer-events:none;
-  z-index:0;
+  z-index:-1;
   opacity:0.12;
   mix-blend-mode:screen;
 }
@@ -132,6 +141,21 @@ p.lead{
   display:block;
 }
 
+#skills-radar{
+  width:100%;
+  height:auto;
+  max-width:260px;
+  border-radius:8px;
+  background:rgba(0,0,0,0.3);
+}
+
+#status-rotator{
+  width:100%;
+  text-align:center;
+  color:#9aa0a6;
+  font-size:0.95rem;
+}
+
 .controls{
   display:flex;
   gap:10px;
@@ -197,14 +221,44 @@ footer{
 .project-list{
   display:flex;
   flex-direction:column;
-  gap:8px;
+  gap:10px;
 }
 
 .project{
   background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);
   padding:8px;
-  border-radius:8px;
+  border-radius:10px;
   border:1px solid rgba(255,255,255,0.02);
+  perspective:800px;
+  cursor:pointer;
+}
+
+.proj-inner{
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform 0.5s ease;
+  min-height:70px;
+}
+
+.project:hover .proj-inner,
+.project.active .proj-inner{
+  transform:rotateY(180deg);
+}
+
+.proj-front,
+.proj-back{
+  position:absolute;
+  inset:0;
+  backface-visibility:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.proj-back{
+  transform:rotateY(180deg);
+  color:var(--muted);
+  font-size:0.92rem;
 }
 
 .proj-title{
@@ -307,7 +361,99 @@ footer{
   outline:none;
 }
 
-/* tablet-ish */
+#dev-panel{
+  position:fixed;
+  left:10px;
+  bottom:10px;
+  padding:8px 10px;
+  background:rgba(0,0,0,0.86);
+  color:var(--muted);
+  font-size:0.8rem;
+  border-radius:8px;
+  border:1px solid rgba(0,255,136,0.18);
+  z-index:9999;
+}
+
+.dev-row{
+  margin:2px 0;
+}
+
+.dev-hidden{
+  display:none;
+}
+
+#konami-menu{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.88);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10000;
+}
+
+.konami-inner{
+  background:#050509;
+  border-radius:12px;
+  padding:18px 20px;
+  border:1px solid rgba(255,59,89,0.4);
+  max-width:320px;
+  width:90%;
+  text-align:center;
+  color:var(--muted);
+}
+
+#konami-menu h2{
+  margin:0 0 8px;
+  color:var(--blood);
+}
+
+#konami-menu button{
+  margin-top:10px;
+  background:transparent;
+  border-radius:8px;
+  border:1px solid rgba(0,255,136,0.5);
+  padding:6px 10px;
+  color:var(--neon);
+  cursor:pointer;
+  font-family:inherit;
+}
+
+.konami-hidden{
+  display:none;
+}
+
+.bsoverlay{
+  position:fixed;
+  inset:0;
+  background:#0044aa;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10001;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,'Courier New',monospace;
+  font-size:0.9rem;
+}
+
+body.hacker-mode{
+  --bg1:#020908;
+  --bg2:#000000;
+  --neon:#00ffcc;
+  --blood:#00ff88;
+  --link:#66ffe0;
+  --panel:#020606;
+}
+
+body.vampire-mode{
+  --bg1:#080106;
+  --bg2:#1a0508;
+  --neon:#ffb4c4;
+  --blood:#ff1744;
+  --link:#ff7aa5;
+  --panel:#110006;
+}
+
 @media (max-width:980px){
   .terminal-wrap{
     margin:16px auto;
@@ -319,27 +465,26 @@ footer{
   }
   .side{
     order:-1;
-    flex-direction:row;
-    justify-content:space-between;
+    flex-direction:column;
+    justify-content:center;
     align-items:center;
     padding:12px;
   }
   .moon{
-    width:110px;
-    height:110px;
+    width:140px;
+    height:140px;
   }
   .main{
     padding:12px;
   }
 }
 
-/* phone */
 @media (max-width:600px){
   body{
     padding:0 6px;
   }
   .terminal-wrap{
-    margin:12px auto;
+    margin:12px auto 80px auto;
     padding:14px;
   }
   .controls{
@@ -347,14 +492,12 @@ footer{
     gap:8px;
   }
   #mini-terminal{
-    width:90%;
+    width:92%;
     left:50%;
     right:auto;
     top:auto;
     bottom:80px;
     transform:translate(-50%,0);
-    border:2px solid rgba(255,59,89,0.24);
-    background:rgba(0,0,0,0.96);
     max-height:60vh;
     overflow:auto;
   }
