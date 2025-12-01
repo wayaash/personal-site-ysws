@@ -40,9 +40,12 @@ let bootMsg = 'Booting modules…'
 let idx = 0
 let typingDone = false
 
-typedElement.textContent = ''
+if (typedElement) {
+  typedElement.textContent = ''
+}
 
 function typeEffect() {
+  if (!typedElement) return
   if (idx < bootMsg.length) {
     typedElement.textContent += bootMsg.charAt(idx)
     idx++
@@ -55,7 +58,7 @@ function typeEffect() {
 typeEffect()
 
 function flickerLoop() {
-  if (!typingDone) return
+  if (!typingDone || !typedElement) return
   const chance = Math.random()
   if (chance > 0.8) {
     typedElement.style.opacity = 0.4 + Math.random() * 0.6
@@ -65,39 +68,43 @@ function flickerLoop() {
   setTimeout(flickerLoop, 200 + Math.random() * 300)
 }
 
-chaosBtn.addEventListener('click', () => {
-  document.body.style.transition = 'filter 0.2s ease'
-  document.body.style.filter = 'hue-rotate(' + Math.random() * 360 + 'deg)'
-  document.body.style.transform = 'scale(1.02)'
-  setTimeout(() => {
-    document.body.style.filter = 'none'
-    document.body.style.transform = 'none'
-  }, 800)
-  chaosBurst()
-  if (Math.random() > 0.6) {
-    const msg = bloopers[Math.floor(Math.random() * bloopers.length)]
-    glitchAlert(msg)
-  }
-  if (Math.random() > 0.9) {
-    blueScreen()
-  }
-})
+if (chaosBtn) {
+  chaosBtn.addEventListener('click', () => {
+    document.body.style.transition = 'filter 0.2s ease'
+    document.body.style.filter = 'hue-rotate(' + Math.random() * 360 + 'deg)'
+    document.body.style.transform = 'scale(1.02)'
+    setTimeout(() => {
+      document.body.style.filter = 'none'
+      document.body.style.transform = 'none'
+    }, 800)
+    chaosBurst()
+    if (Math.random() > 0.6) {
+      randomBlooper()
+    }
+    if (Math.random() > 0.9) {
+      blueScreen()
+    }
+  })
+}
 
-copyBtn.addEventListener('click', () => {
-  const email = 'gamerzinfo72@gmail.com'
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(email).then(() => {
-      copyBtn.innerText = 'Copied ⚡'
-      setTimeout(() => (copyBtn.innerText = 'Copy email'), 1500)
-    }).catch(() => {
+if (copyBtn) {
+  copyBtn.addEventListener('click', () => {
+    const email = 'gamerzinfo72@gmail.com'
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(email).then(() => {
+        copyBtn.innerText = 'Copied ⚡'
+        setTimeout(() => (copyBtn.innerText = 'Copy email'), 1500)
+      }).catch(() => {
+        fallbackCopy(email)
+      })
+    } else {
       fallbackCopy(email)
-    })
-  } else {
-    fallbackCopy(email)
-  }
-})
+    }
+  })
+}
 
 function fallbackCopy(text) {
+  if (!copyBtn) return
   try {
     const ta = document.createElement('textarea')
     ta.value = text
@@ -146,57 +153,59 @@ document.addEventListener('keydown', (e) => {
 
 function handleGlobalKeys(e) {
   if (!isTyping(e)) {
-    if (e.key.toLowerCase() === 'b') {
+    const k = e.key.toLowerCase()
+    if (k === 'b') {
       randomBlooper()
     }
-    if (e.key.toLowerCase() === 'y') {
+    if (k === 'y') {
       showMini()
     }
-    if (e.key.toLowerCase() === 'h') {
+    if (k === 'h') {
       toggleHackerMode()
     }
-    if (e.key.toLowerCase() === 'v') {
+    if (k === 'v') {
       toggleVampireMode()
     }
     if (snakeActive) {
-      if (e.key === 'ArrowUp' || e.key.toLowerCase() === 'w') {
+      if (e.key === 'ArrowUp' || k === 'w') {
         if (snakeDir.y === 1) return
         snakeDir = { x:0, y:-1 }
-      } else if (e.key === 'ArrowDown' || e.key.toLowerCase() === 's') {
+      } else if (e.key === 'ArrowDown' || k === 's') {
         if (snakeDir.y === -1) return
         snakeDir = { x:0, y:1 }
-      } else if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') {
+      } else if (e.key === 'ArrowLeft' || k === 'a') {
         if (snakeDir.x === 1) return
         snakeDir = { x:-1, y:0 }
-      } else if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') {
+      } else if (e.key === 'ArrowRight' || k === 'd') {
         if (snakeDir.x === -1) return
         snakeDir = { x:1, y:0 }
       }
     }
-    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'd') {
+    if (e.ctrlKey && e.shiftKey && k === 'd') {
       toggleDevPanel()
     }
   }
 }
 
-const trails = []
-document.addEventListener('mousemove', (e) => {
-  const dot = document.createElement('div')
-  dot.className = 'trail'
-  dot.style.left = e.clientX + 'px'
-  dot.style.top = e.clientY + 'px'
-  dot.style.background = `hsl(${Math.random() * 360},100%,60%)`
-  dot.style.boxShadow = '0 0 10px ' + dot.style.background
-  trailRoot.appendChild(dot)
-  trails.push(dot)
-  setTimeout(() => dot.remove(), 1000)
-})
+if (trailRoot) {
+  document.addEventListener('mousemove', (e) => {
+    const dot = document.createElement('div')
+    dot.className = 'trail'
+    dot.style.left = e.clientX + 'px'
+    dot.style.top = e.clientY + 'px'
+    dot.style.background = `hsl(${Math.random() * 360},100%,60%)`
+    dot.style.boxShadow = '0 0 10px ' + dot.style.background
+    trailRoot.appendChild(dot)
+    setTimeout(() => dot.remove(), 1000)
+  })
+}
 
 const starCanvas = document.getElementById('starfield')
-const starCtx = starCanvas.getContext('2d')
+const starCtx = starCanvas ? starCanvas.getContext('2d') : null
 let stars = []
 
 function initStars() {
+  if (!starCanvas || !starCtx) return
   starCanvas.width = window.innerWidth
   starCanvas.height = window.innerHeight
   stars = []
@@ -212,6 +221,7 @@ function initStars() {
 }
 
 function drawStars() {
+  if (!starCanvas || !starCtx) return
   starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height)
   for (let i = 0; i < stars.length; i++) {
     const st = stars[i]
@@ -228,24 +238,26 @@ function drawStars() {
 
 const shaderCanvasEl = document.getElementById('shader-canvas')
 const particleCanvasEl = document.getElementById('particle-canvas')
-const shaderCanvas = shaderCanvasEl.getContext('2d')
-const particleCanvas = particleCanvasEl.getContext('2d')
 const radarCanvasEl = document.getElementById('skills-radar')
-const radarCtx = radarCanvasEl.getContext('2d')
+const shaderCanvas = shaderCanvasEl ? shaderCanvasEl.getContext('2d') : null
+const particleCanvas = particleCanvasEl ? particleCanvasEl.getContext('2d') : null
+const radarCtx = radarCanvasEl ? radarCanvasEl.getContext('2d') : null
 
 function resizeAllCanvases() {
   initStars()
   const ratio = window.devicePixelRatio || 1
-  ;[shaderCanvasEl, particleCanvasEl].forEach(c => {
-    const w = c.clientWidth
-    const h = c.clientHeight
-    c.width = Math.floor(w * ratio)
-    c.height = Math.floor(h * ratio)
-    c.style.width = w + 'px'
-    c.style.height = h + 'px'
-  })
-  shaderCanvas.setTransform(ratio,0,0,ratio,0,0)
-  particleCanvas.setTransform(ratio,0,0,ratio,0,0)
+  if (shaderCanvasEl && particleCanvasEl && shaderCanvas && particleCanvas) {
+    ;[shaderCanvasEl, particleCanvasEl].forEach(c => {
+      const w = c.clientWidth
+      const h = c.clientHeight
+      c.width = Math.floor(w * ratio)
+      c.height = Math.floor(h * ratio)
+      c.style.width = w + 'px'
+      c.style.height = h + 'px'
+    })
+    shaderCanvas.setTransform(ratio,0,0,ratio,0,0)
+    particleCanvas.setTransform(ratio,0,0,ratio,0,0)
+  }
   drawSkillsRadar()
 }
 window.addEventListener('resize', resizeAllCanvases)
@@ -261,6 +273,7 @@ const skillsData = [
 ]
 
 function drawSkillsRadar() {
+  if (!radarCanvasEl || !radarCtx) return
   const w = radarCanvasEl.width
   const h = radarCanvasEl.height
   radarCtx.clearRect(0, 0, w, h)
@@ -308,7 +321,9 @@ const devMode = document.getElementById('dev-mode')
 
 function toggleDevPanel() {
   devPanelVisible = !devPanelVisible
-  devPanel.classList.toggle('dev-hidden', !devPanelVisible)
+  if (devPanel) {
+    devPanel.classList.toggle('dev-hidden', !devPanelVisible)
+  }
 }
 
 let particleCount = 0
@@ -321,23 +336,25 @@ function animate() {
 
   drawStars()
 
-  shaderCanvas.clearRect(0, 0, shaderCanvasEl.width, shaderCanvasEl.height)
-  particleCanvas.clearRect(0, 0, particleCanvasEl.width, particleCanvasEl.height)
-  for (let j = 0; j < 10; j++) {
-    shaderCanvas.fillStyle = 'hsl(' + Math.random() * 360 + ',70%,60%)'
-    shaderCanvas.fillRect(Math.random() * shaderCanvasEl.width, Math.random() * shaderCanvasEl.height, 2, 2)
-  }
-  particleCount = 0
-  for (let j = 0; j < 20; j++) {
-    particleCanvas.beginPath()
-    particleCanvas.fillStyle = 'hsl(' + Math.random() * 360 + ',100%,50%)'
-    const r = Math.random() * 3
-    particleCanvas.arc(Math.random() * particleCanvasEl.width, Math.random() * particleCanvasEl.height, r, 0, Math.PI * 2)
-    particleCanvas.fill()
-    particleCount++
+  if (shaderCanvas && shaderCanvasEl && particleCanvas && particleCanvasEl) {
+    shaderCanvas.clearRect(0, 0, shaderCanvasEl.width, shaderCanvasEl.height)
+    particleCanvas.clearRect(0, 0, particleCanvasEl.width, particleCanvasEl.height)
+    for (let j = 0; j < 10; j++) {
+      shaderCanvas.fillStyle = 'hsl(' + Math.random() * 360 + ',70%,60%)'
+      shaderCanvas.fillRect(Math.random() * shaderCanvasEl.width, Math.random() * shaderCanvasEl.height, 2, 2)
+    }
+    particleCount = 0
+    for (let j = 0; j < 20; j++) {
+      particleCanvas.beginPath()
+      particleCanvas.fillStyle = 'hsl(' + Math.random() * 360 + ',100%,50%)'
+      const r = Math.random() * 3
+      particleCanvas.arc(Math.random() * particleCanvasEl.width, Math.random() * particleCanvasEl.height, r, 0, Math.PI * 2)
+      particleCanvas.fill()
+      particleCount++
+    }
   }
 
-  if (devPanelVisible) {
+  if (devPanelVisible && devFps && devParticles && devMode) {
     devFps.textContent = 'FPS: ' + fps.toFixed(0)
     devParticles.textContent = 'Particles: ' + particleCount
     let mode = 'normal'
@@ -433,6 +450,7 @@ const miniBody = document.getElementById('mini-body')
 const miniHeader = document.getElementById('mini-header')
 
 function showMini() {
+  if (!miniTerm || !miniInput) return
   if (window.innerWidth <= 600) {
     miniTerm.style.width = '92%'
     miniTerm.style.left = '50%'
@@ -457,31 +475,40 @@ function showMini() {
 }
 
 function hideMini() {
+  if (!miniTerm) return
   miniTerm.classList.add('mini-hidden')
+  stopSnake()
 }
 
-yTrigger.addEventListener('click', showMini)
-miniClose.addEventListener('click', (e) => {
-  e.stopPropagation()
-  hideMini()
-})
+if (yTrigger) {
+  yTrigger.addEventListener('click', showMini)
+}
+
+if (miniClose) {
+  miniClose.addEventListener('click', (e) => {
+    e.stopPropagation()
+    hideMini()
+  })
+}
 
 let isDragging = false
 let dragOffsetX = 0
 let dragOffsetY = 0
 
-miniHeader.addEventListener('mousedown', e => {
-  if (e.button !== 0) return
-  if (window.innerWidth <= 600) return
-  const rect = miniTerm.getBoundingClientRect()
-  isDragging = true
-  dragOffsetX = e.clientX - rect.left
-  dragOffsetY = e.clientY - rect.top
-  miniTerm.style.transition = 'none'
-})
+if (miniHeader && miniTerm) {
+  miniHeader.addEventListener('mousedown', e => {
+    if (e.button !== 0) return
+    if (window.innerWidth <= 600) return
+    const rect = miniTerm.getBoundingClientRect()
+    isDragging = true
+    dragOffsetX = e.clientX - rect.left
+    dragOffsetY = e.clientY - rect.top
+    miniTerm.style.transition = 'none'
+  })
+}
 
 document.addEventListener('mousemove', e => {
-  if (!isDragging) return
+  if (!isDragging || !miniTerm) return
   const left = e.clientX - dragOffsetX
   const top = e.clientY - dragOffsetY
   const clampedLeft = Math.max(8, Math.min(left, window.innerWidth - miniTerm.offsetWidth - 8))
@@ -492,23 +519,26 @@ document.addEventListener('mousemove', e => {
 })
 
 document.addEventListener('mouseup', () => {
-  if (!isDragging) return
+  if (!isDragging || !miniTerm) return
   isDragging = false
   miniTerm.style.transition = ''
   const rect = miniTerm.getBoundingClientRect()
   localStorage.setItem('mini-pos', JSON.stringify({ left: Math.round(rect.left), top: Math.round(rect.top) }))
 })
 
-miniInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    const cmdRaw = miniInput.value.trim()
-    const cmd = cmdRaw.toLowerCase()
-    handleCommand(cmd, cmdRaw)
-    miniInput.value = ''
-  }
-})
+if (miniInput && miniBody) {
+  miniInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const cmdRaw = miniInput.value.trim()
+      const cmd = cmdRaw.toLowerCase()
+      handleCommand(cmd, cmdRaw)
+      miniInput.value = ''
+    }
+  })
+}
 
 function appendLine(text) {
+  if (!miniBody) return
   const el = document.createElement('div')
   el.className = 'mline'
   el.textContent = text
@@ -526,7 +556,7 @@ let snakeTimer = null
 let snakeView = null
 
 function startSnake() {
-  if (snakeActive) return
+  if (snakeActive || !miniBody) return
   snakeActive = true
   snake = [{ x:2, y:5 }, { x:1, y:5 }]
   snakeDir = { x:1, y:0 }
@@ -595,12 +625,12 @@ function renderSnake() {
     grid.push(row)
   }
   snakeView.textContent = grid.join('\n')
-  miniBody.scrollTop = miniBody.scrollHeight
+  if (miniBody) miniBody.scrollTop = miniBody.scrollHeight
 }
 
 function handleCommand(cmd, raw) {
   if (cmd === 'help') {
-    appendLine('help: help | stats | cheer | about | projects | quote | matrix | talk | snake | snake stop | theme | hacker | vampire | bsod')
+    appendLine('help: help | stats | cheer | about | projects | quote | matrix | talk | snake | snake stop | theme | hacker | vampire | bsod | clear')
   } else if (cmd === 'stats') {
     appendLine('matches: 48 • wins: 34 • captaincies: 2')
   } else if (cmd === 'cheer') {
@@ -646,7 +676,7 @@ function handleCommand(cmd, raw) {
     appendLine('triggering fake blue screen...')
     blueScreen()
   } else if (cmd === 'clear') {
-    miniBody.innerHTML = ''
+    if (miniBody) miniBody.innerHTML = ''
   } else {
     appendLine('Unknown command: ' + raw)
   }
@@ -677,11 +707,17 @@ function handleKonami(e) {
 }
 
 function unlockKonami() {
-  konamiMenu.classList.remove('konami-hidden')
+  if (konamiMenu) konamiMenu.classList.remove('konami-hidden')
 }
 
-konamiClose.addEventListener('click', () => {
-  konamiMenu.classList.add('konami-hidden')
+if (konamiClose) {
+  konamiClose.addEventListener('click', () => {
+    if (konamiMenu) konamiMenu.classList.add('konami-hidden')
+  })
+}
+
+window.addEventListener('load', () => {
+  if (konamiMenu) konamiMenu.classList.add('konami-hidden')
 })
 
 let statusIndex = 0
@@ -700,3 +736,4 @@ projectCards.forEach(card => {
     }
   })
 })
+
