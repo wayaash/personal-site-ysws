@@ -382,46 +382,6 @@ footer{
   display:none;
 }
 
-#konami-menu{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.88);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:10000;
-}
-
-.konami-inner{
-  background:#050509;
-  border-radius:12px;
-  padding:18px 20px;
-  border:1px solid rgba(255,59,89,0.4);
-  max-width:320px;
-  width:90%;
-  text-align:center;
-  color:var(--muted);
-}
-
-#konami-menu h2{
-  margin:0 0 8px;
-  color:var(--blood);
-}
-
-#konami-menu button{
-  margin-top:10px;
-  background:transparent;
-  border-radius:8px;
-  border:1px solid rgba(0,255,136,0.5);
-  padding:6px 10px;
-  color:var(--neon);
-  cursor:pointer;
-  font-family:inherit;
-}
-
-.konami-hidden{
-  display:none;
-}
 
 .bsoverlay{
   position:fixed;
