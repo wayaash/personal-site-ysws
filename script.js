@@ -40,9 +40,7 @@ let bootMsg = 'Booting modules…'
 let idx = 0
 let typingDone = false
 
-if (typedElement) {
-  typedElement.textContent = ''
-}
+if (typedElement) typedElement.textContent = ''
 
 function typeEffect() {
   if (!typedElement) return
@@ -60,11 +58,7 @@ typeEffect()
 function flickerLoop() {
   if (!typingDone || !typedElement) return
   const chance = Math.random()
-  if (chance > 0.8) {
-    typedElement.style.opacity = 0.4 + Math.random() * 0.6
-  } else {
-    typedElement.style.opacity = 1
-  }
+  typedElement.style.opacity = chance > 0.8 ? 0.4 + Math.random() * 0.6 : 1
   setTimeout(flickerLoop, 200 + Math.random() * 300)
 }
 
@@ -78,12 +72,8 @@ if (chaosBtn) {
       document.body.style.transform = 'none'
     }, 800)
     chaosBurst()
-    if (Math.random() > 0.6) {
-      randomBlooper()
-    }
-    if (Math.random() > 0.9) {
-      blueScreen()
-    }
+    if (Math.random() > 0.6) randomBlooper()
+    if (Math.random() > 0.9) blueScreen()
   })
 }
 
@@ -137,14 +127,12 @@ function randomBlooper() {
 let inactivityTimer = null
 function resetInactivity() {
   if (inactivityTimer) clearTimeout(inactivityTimer)
-  inactivityTimer = setTimeout(() => {
-    randomBlooper()
-  }, 14000)
+  inactivityTimer = setTimeout(randomBlooper, 14000)
 }
 resetInactivity()
 
-document.addEventListener('mousemove', () => resetInactivity())
-document.addEventListener('keydown', () => resetInactivity())
+document.addEventListener('mousemove', resetInactivity)
+document.addEventListener('keydown', resetInactivity)
 
 document.addEventListener('keydown', (e) => {
   handleKonami(e)
@@ -152,39 +140,29 @@ document.addEventListener('keydown', (e) => {
 })
 
 function handleGlobalKeys(e) {
-  if (!isTyping(e)) {
-    const k = e.key.toLowerCase()
-    if (k === 'b') {
-      randomBlooper()
-    }
-    if (k === 'y') {
-      showMini()
-    }
-    if (k === 'h') {
-      toggleHackerMode()
-    }
-    if (k === 'v') {
-      toggleVampireMode()
-    }
-    if (snakeActive) {
-      if (e.key === 'ArrowUp' || k === 'w') {
-        if (snakeDir.y === 1) return
-        snakeDir = { x:0, y:-1 }
-      } else if (e.key === 'ArrowDown' || k === 's') {
-        if (snakeDir.y === -1) return
-        snakeDir = { x:0, y:1 }
-      } else if (e.key === 'ArrowLeft' || k === 'a') {
-        if (snakeDir.x === 1) return
-        snakeDir = { x:-1, y:0 }
-      } else if (e.key === 'ArrowRight' || k === 'd') {
-        if (snakeDir.x === -1) return
-        snakeDir = { x:1, y:0 }
-      }
-    }
-    if (e.ctrlKey && e.shiftKey && k === 'd') {
-      toggleDevPanel()
+  if (isTyping(e)) return
+  const k = e.key.toLowerCase()
+  if (k === 'b') randomBlooper()
+  if (k === 'y') showMini()
+  if (k === 'h') toggleHackerMode()
+  if (k === 'v') toggleVampireMode()
+  if (k === 'escape') hideKonami()
+  if (snakeActive) {
+    if (e.key === 'ArrowUp' || k === 'w') {
+      if (snakeDir.y === 1) return
+      snakeDir = { x:0, y:-1 }
+    } else if (e.key === 'ArrowDown' || k === 's') {
+      if (snakeDir.y === -1) return
+      snakeDir = { x:0, y:1 }
+    } else if (e.key === 'ArrowLeft' || k === 'a') {
+      if (snakeDir.x === 1) return
+      snakeDir = { x:-1, y:0 }
+    } else if (e.key === 'ArrowRight' || k === 'd') {
+      if (snakeDir.x === -1) return
+      snakeDir = { x:1, y:0 }
     }
   }
+  if (e.ctrlKey && e.shiftKey && k === 'd') toggleDevPanel()
 }
 
 if (trailRoot) {
@@ -321,9 +299,7 @@ const devMode = document.getElementById('dev-mode')
 
 function toggleDevPanel() {
   devPanelVisible = !devPanelVisible
-  if (devPanel) {
-    devPanel.classList.toggle('dev-hidden', !devPanelVisible)
-  }
+  if (devPanel) devPanel.classList.toggle('dev-hidden', !devPanelVisible)
 }
 
 let particleCount = 0
@@ -428,11 +404,30 @@ function blueScreen() {
   }, 900)
 }
 
+const THEME_KEY = 'yash-theme'
+
+function applyStoredTheme() {
+  const stored = localStorage.getItem(THEME_KEY)
+  document.body.classList.remove('hacker-mode','vampire-mode')
+  if (stored === 'hacker') document.body.classList.add('hacker-mode')
+  if (stored === 'vampire') document.body.classList.add('vampire-mode')
+}
+
+function saveTheme() {
+  let mode = 'base'
+  if (document.body.classList.contains('hacker-mode')) mode = 'hacker'
+  if (document.body.classList.contains('vampire-mode')) mode = 'vampire'
+  try {
+    localStorage.setItem(THEME_KEY, mode)
+  } catch (e) {}
+}
+
 function toggleHackerMode() {
   document.body.classList.toggle('hacker-mode')
   if (document.body.classList.contains('hacker-mode')) {
     document.body.classList.remove('vampire-mode')
   }
+  saveTheme()
 }
 
 function toggleVampireMode() {
@@ -440,7 +435,10 @@ function toggleVampireMode() {
   if (document.body.classList.contains('vampire-mode')) {
     document.body.classList.remove('hacker-mode')
   }
+  saveTheme()
 }
+
+window.addEventListener('load', applyStoredTheme)
 
 const yTrigger = document.getElementById('y-trigger')
 const miniTerm = document.getElementById('mini-terminal')
@@ -480,10 +478,7 @@ function hideMini() {
   stopSnake()
 }
 
-if (yTrigger) {
-  yTrigger.addEventListener('click', showMini)
-}
-
+if (yTrigger) yTrigger.addEventListener('click', showMini)
 if (miniClose) {
   miniClose.addEventListener('click', (e) => {
     e.stopPropagation()
@@ -625,7 +620,7 @@ function renderSnake() {
     grid.push(row)
   }
   snakeView.textContent = grid.join('\n')
-  if (miniBody) miniBody.scrollTop = miniBody.scrollHeight
+  miniBody.scrollTop = miniBody.scrollHeight
 }
 
 function handleCommand(cmd, raw) {
@@ -665,6 +660,7 @@ function handleCommand(cmd, raw) {
       document.body.classList.remove('hacker-mode')
       document.body.classList.remove('vampire-mode')
       appendLine('theme: back to base.')
+      saveTheme()
     }
   } else if (cmd === 'hacker') {
     toggleHackerMode()
@@ -676,7 +672,7 @@ function handleCommand(cmd, raw) {
     appendLine('triggering fake blue screen...')
     blueScreen()
   } else if (cmd === 'clear') {
-    if (miniBody) miniBody.innerHTML = ''
+    miniBody.innerHTML = ''
   } else {
     appendLine('Unknown command: ' + raw)
   }
@@ -698,26 +694,41 @@ function handleKonami(e) {
       unlockKonami()
     }
   } else {
-    if (key === konamiSeq[0]) {
-      konamiIndex = 1
-    } else {
-      konamiIndex = 0
-    }
+    if (key === konamiSeq[0]) konamiIndex = 1
+    else konamiIndex = 0
   }
 }
 
 function unlockKonami() {
-  if (konamiMenu) konamiMenu.classList.remove('konami-hidden')
+  if (!konamiMenu) return
+  konamiMenu.classList.remove('konami-hidden')
+  konamiMenu.style.display = 'flex'
+}
+
+function hideKonami() {
+  if (!konamiMenu) return
+  konamiMenu.classList.add('konami-hidden')
+  konamiMenu.style.display = 'none'
 }
 
 if (konamiClose) {
-  konamiClose.addEventListener('click', () => {
-    if (konamiMenu) konamiMenu.classList.add('konami-hidden')
+  konamiClose.addEventListener('click', (e) => {
+    e.stopPropagation()
+    hideKonami()
+  })
+}
+
+if (konamiMenu) {
+  konamiMenu.addEventListener('click', (e) => {
+    if (e.target === konamiMenu) hideKonami()
   })
 }
 
 window.addEventListener('load', () => {
-  if (konamiMenu) konamiMenu.classList.add('konami-hidden')
+  if (konamiMenu) {
+    konamiMenu.classList.add('konami-hidden')
+    konamiMenu.style.display = 'none'
+  }
 })
 
 let statusIndex = 0
@@ -731,9 +742,6 @@ setInterval(rotateStatus, 7000)
 const projectCards = document.querySelectorAll('.project')
 projectCards.forEach(card => {
   card.addEventListener('click', () => {
-    if (window.innerWidth <= 980) {
-      card.classList.toggle('active')
-    }
+    if (window.innerWidth <= 980) card.classList.toggle('active')
   })
 })
-
