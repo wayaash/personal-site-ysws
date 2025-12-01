@@ -678,58 +678,6 @@ function handleCommand(cmd, raw) {
   }
 }
 
-let konamiSeq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a']
-let konamiIndex = 0
-const konamiMenu = document.getElementById('konami-menu')
-const konamiClose = document.getElementById('konami-close')
-
-function handleKonami(e) {
-  let key = e.key
-  if (key.length === 1) key = key.toLowerCase()
-  const expected = konamiSeq[konamiIndex]
-  if (key === expected) {
-    konamiIndex++
-    if (konamiIndex === konamiSeq.length) {
-      konamiIndex = 0
-      unlockKonami()
-    }
-  } else {
-    if (key === konamiSeq[0]) konamiIndex = 1
-    else konamiIndex = 0
-  }
-}
-
-function unlockKonami() {
-  if (!konamiMenu) return
-  konamiMenu.classList.remove('konami-hidden')
-  konamiMenu.style.display = 'flex'
-}
-
-function hideKonami() {
-  if (!konamiMenu) return
-  konamiMenu.classList.add('konami-hidden')
-  konamiMenu.style.display = 'none'
-}
-
-if (konamiClose) {
-  konamiClose.addEventListener('click', (e) => {
-    e.stopPropagation()
-    hideKonami()
-  })
-}
-
-if (konamiMenu) {
-  konamiMenu.addEventListener('click', (e) => {
-    if (e.target === konamiMenu) hideKonami()
-  })
-}
-
-window.addEventListener('load', () => {
-  if (konamiMenu) {
-    konamiMenu.classList.add('konami-hidden')
-    konamiMenu.style.display = 'none'
-  }
-})
 
 let statusIndex = 0
 function rotateStatus() {
