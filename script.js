@@ -140,6 +140,7 @@ document.addEventListener('keydown', e => {
 
 function handleGlobalKeys(e) {
   const k = e.key.toLowerCase()
+
   if (!isTyping(e)) {
     if (k === 'b') randomBlooper()
     if (k === 'y') showMini()
@@ -148,6 +149,7 @@ function handleGlobalKeys(e) {
     if (k === 'escape') hideMini()
     if (e.ctrlKey && e.shiftKey && k === 'd') toggleDevPanel()
   }
+
   if (snakeActive) {
     if (e.key === 'ArrowUp' || k === 'w') {
       if (snakeDir.y === 1) return
@@ -636,6 +638,7 @@ function renderSnake() {
 }
 
 function handleCommand(cmd, raw) {
+  if (!miniBody) return
   if (cmd === 'help') {
     appendLine('help: help | stats | cheer | about | projects | quote | matrix | talk | snake | snake stop | theme | hacker | vampire | bsod | clear')
   } else if (cmd === 'stats') {
