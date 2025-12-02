@@ -382,7 +382,6 @@ footer{
   display:none;
 }
 
-
 .bsoverlay{
   position:fixed;
   inset:0;
@@ -394,6 +393,7 @@ footer{
   z-index:10001;
   font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,'Courier New',monospace;
   font-size:0.9rem;
+  transition:opacity 0.5s ease;
 }
 
 body.hacker-mode{
