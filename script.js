@@ -139,28 +139,30 @@ document.addEventListener('keydown', e => {
 })
 
 function handleGlobalKeys(e) {
-  const k = e.key.toLowerCase()
+  const key = e.key || ''
+  const code = e.code || ''
+  const k = key.toLowerCase()
 
   if (!isTyping(e)) {
-    if (k === 'b') randomBlooper()
-    if (k === 'y') showMini()
-    if (k === 'h') toggleHackerMode()
-    if (k === 'v') toggleVampireMode()
-    if (k === 'escape') hideMini()
-    if (e.ctrlKey && e.shiftKey && k === 'd') toggleDevPanel()
+    if (k === 'b' || code === 'KeyB') randomBlooper()
+    if (k === 'y' || code === 'KeyY') showMini()
+    if (k === 'h' || code === 'KeyH') toggleHackerMode()
+    if (k === 'v' || code === 'KeyV') toggleVampireMode()
+    if (k === 'escape' || code === 'Escape') hideMini()
+    if (e.ctrlKey && e.shiftKey && (k === 'd' || code === 'KeyD')) toggleDevPanel()
   }
 
   if (snakeActive) {
-    if (e.key === 'ArrowUp' || k === 'w') {
+    if (key === 'ArrowUp' || k === 'w' || code === 'ArrowUp') {
       if (snakeDir.y === 1) return
       snakeDir = { x:0, y:-1 }
-    } else if (e.key === 'ArrowDown' || k === 's') {
+    } else if (key === 'ArrowDown' || k === 's' || code === 'ArrowDown') {
       if (snakeDir.y === -1) return
       snakeDir = { x:0, y:1 }
-    } else if (e.key === 'ArrowLeft' || k === 'a') {
+    } else if (key === 'ArrowLeft' || k === 'a' || code === 'ArrowLeft') {
       if (snakeDir.x === 1) return
       snakeDir = { x:-1, y:0 }
-    } else if (e.key === 'ArrowRight' || k === 'd') {
+    } else if (key === 'ArrowRight' || k === 'd' || code === 'ArrowRight') {
       if (snakeDir.x === -1) return
       snakeDir = { x:1, y:0 }
     }
