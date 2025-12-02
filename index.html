@@ -12,13 +12,13 @@
 <svg id="smoke-layer" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
   <defs>
     <linearGradient id="sg1" x1="0" x2="1">
-      <stop offset="0" stop-color="#ff0f2d" stop-opacity="0.06"></stop>
-      <stop offset="1" stop-color="#000" stop-opacity="0"></stop>
+      <stop offset="0" stop-color="#ff0f2d" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
     </linearGradient>
   </defs>
   <g>
-    <ellipse cx="200" cy="160" rx="520" ry="180" fill="url(#sg1)" opacity="0.95"></ellipse>
-    <ellipse cx="1400" cy="740" rx="480" ry="160" fill="#000" opacity="0.32"></ellipse>
+    <ellipse cx="200" cy="160" rx="520" ry="180" fill="url(#sg1)" opacity="0.95"/>
+    <ellipse cx="1400" cy="740" rx="480" ry="160" fill="#000" opacity="0.32"/>
   </g>
 </svg>
 
@@ -27,6 +27,7 @@
     <div class="main">
       <h1>/usr/bin/Yash Raghuwanshi</h1>
       <p class="lead muted">Chaos, smoke, particles, shaders. Mostly working.</p>
+
       <div class="line"><span class="prompt">$</span> <span id="typed"></span></div>
       <div class="line"><span class="prompt">$</span> Status: ready — press <strong>B</strong> for blooper</div>
 
@@ -60,10 +61,10 @@
             <div class="proj-inner">
               <div class="proj-front">
                 <div class="proj-title">Lava-frag (WebGL)</div>
-                <div class="proj-desc">A fragment shader that simulates lava — experimental GPU fun. Demo and code exist somewhere in the void.</div>
+                <div class="proj-desc">Fragment shader lava sim. Experimental GPU chaos with glowing liquid code.</div>
               </div>
               <div class="proj-back">
-                Melts GPUs for fun. Pure fragment shader chaos with glowing lava and broken sanity.
+                Melts GPUs for fun. Pure fragment shader nonsense, tuned at 3 AM with way too much caffeine.
               </div>
             </div>
           </div>
@@ -71,10 +72,10 @@
             <div class="proj-inner">
               <div class="proj-front">
                 <div class="proj-title">Particle DJ</div>
-                <div class="proj-desc">Particles that dance to imaginary audio. Pretends to listen to songs, actually listens to math.</div>
+                <div class="proj-desc">Particles that pretend to dance to music. Actually just listening to math.</div>
               </div>
               <div class="proj-back">
-                Visual noise party. Glowing orbs synced to imaginary beats and chaotic equations.
+                Visual noise party. Imaginary soundtrack, real shaders, maximum chaos energy.
               </div>
             </div>
           </div>
@@ -86,7 +87,7 @@
 
     <aside class="side">
       <div class="moon" aria-hidden="true">
-        <img class="pfp" src="assets/pfp.jpg" alt="Yash profile image" onerror="this.style.display='none'">
+        <img class="pfp" src="assets/pfp.jpg" alt="Yash profile image" onerror="this.style.display='none'"/>
       </div>
       <canvas id="shader-canvas" width="320" height="140" aria-hidden="true"></canvas>
       <canvas id="particle-canvas" width="320" height="120" aria-hidden="true"></canvas>
@@ -98,7 +99,7 @@
 
 <div id="trail-root" aria-hidden="true"></div>
 
-<button id="y-trigger" aria-label="open-mini-terminal">Y</button>
+<button id="y-trigger" aria-label="open mini terminal">Y</button>
 
 <div id="mini-terminal" class="mini-hidden" role="dialog" aria-label="mini terminal" aria-modal="false">
   <div id="mini-header">
@@ -110,10 +111,10 @@
     <div class="mline"><span class="mprompt">$</span> name: Yash Raghuwanshi</div>
     <div class="mline"><span class="mprompt">$</span> sports: state-level kho-kho</div>
     <div class="mline"><span class="mprompt">$</span> role: Sports Lead (school)</div>
-    <div class="mline"><span class="mprompt">$</span> commands: help | stats | cheer | about | projects | quote | matrix | talk | snake | theme | bsod</div>
+    <div class="mline"><span class="mprompt">$</span> commands: help | stats | cheer | about | projects | quote | matrix | talk | snake | theme | hacker | vampire | bsod | clear</div>
   </div>
   <div id="mini-input-row">
-    <span class="mprompt">$</span><input id="mini-input" autocomplete="off" placeholder="type command (help)">
+    <span class="mprompt">$</span><input id="mini-input" autocomplete="off" placeholder="type command (help)" />
   </div>
 </div>
 
@@ -122,7 +123,6 @@
   <div class="dev-row" id="dev-particles">Particles: --</div>
   <div class="dev-row" id="dev-mode">Mode: normal</div>
 </div>
-
 
 <script src="script.js"></script>
 </body>
