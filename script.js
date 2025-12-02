@@ -267,8 +267,8 @@ function drawSkillsRadar() {
       const angle = (Math.PI * 2 * i) / skillsData.length - Math.PI / 2
       const x = cx + r * Math.cos(angle)
       const y = cy + r * Math.sin(angle)
-      if (i === 0) radarCtx.moveTo(x,y)
-      else radarCtx.lineTo(x,y)
+      if (i === 0) radarCtx.moveTo(x, y)
+      else radarCtx.lineTo(x, y)
     }
     radarCtx.closePath()
     radarCtx.stroke()
@@ -279,8 +279,8 @@ function drawSkillsRadar() {
     const r = radius * skillsData[i].value
     const x = cx + r * Math.cos(angle)
     const y = cy + r * Math.sin(angle)
-    if (i === 0) radarCtx.moveTo(x,y)
-    else radarCtx.lineTo(x,y)
+    if (i === 0) radarCtx.moveTo(x, y)
+    else radarCtx.lineTo(x, y)
   }
   radarCtx.closePath()
   radarCtx.fillStyle = 'rgba(255,59,89,0.25)'
@@ -375,7 +375,7 @@ function glitchAlert(msg) {
   box.style.color = '#ff3b59'
   box.style.padding = '20px 40px'
   box.style.fontFamily = 'monospace'
-  box.style.border = '2px solid #ff3b59'
+  box.style.border = '2px solid '#ff3b59'
   box.style.zIndex = 9999
   box.style.textShadow = '0 0 8px #ff3b59'
   box.style.pointerEvents = 'none'
@@ -407,7 +407,12 @@ function blueScreen() {
 const THEME_KEY = 'yash-theme'
 
 function applyStoredTheme() {
-  const stored = localStorage.getItem(THEME_KEY)
+  let stored = null
+  try {
+    stored = localStorage.getItem(THEME_KEY)
+  } catch (e) {
+    stored = null
+  }
   document.body.classList.remove('hacker-mode','vampire-mode')
   if (stored === 'hacker') document.body.classList.add('hacker-mode')
   if (stored === 'vampire') document.body.classList.add('vampire-mode')
@@ -457,7 +462,12 @@ function showMini() {
     miniTerm.style.top = 'auto'
     miniTerm.style.transform = 'translate(-50%,0)'
   } else {
-    const pos = JSON.parse(localStorage.getItem('mini-pos') || 'null')
+    let pos = null
+    try {
+      pos = JSON.parse(localStorage.getItem('mini-pos') || 'null')
+    } catch (e) {
+      pos = null
+    }
     if (pos && typeof pos.left === 'number' && typeof pos.top === 'number') {
       miniTerm.style.left = pos.left + 'px'
       miniTerm.style.top = pos.top + 'px'
@@ -518,7 +528,9 @@ document.addEventListener('mouseup', () => {
   isDragging = false
   miniTerm.style.transition = ''
   const rect = miniTerm.getBoundingClientRect()
-  localStorage.setItem('mini-pos', JSON.stringify({ left: Math.round(rect.left), top: Math.round(rect.top) }))
+  try {
+    localStorage.setItem('mini-pos', JSON.stringify({ left: Math.round(rect.left), top: Math.round(rect.top) }))
+  } catch (e) {}
 })
 
 if (miniInput && miniBody) {
@@ -627,9 +639,9 @@ function handleCommand(cmd, raw) {
   if (cmd === 'help') {
     appendLine('help: help | stats | cheer | about | projects | quote | matrix | talk | snake | snake stop | theme | hacker | vampire | bsod | clear')
   } else if (cmd === 'stats') {
-    appendLine('matches: 48 • wins: 34 • captaincies: 2')
+    appendLine('matches: 48 • wins: 34 • captaincies: 43')
   } else if (cmd === 'cheer') {
-    appendLine('You cheer loudly. Teammates respond with echo.')
+    appendLine('You cheer loudly. Teammates respond with echo. But Yet yash cannot see you :(')
   } else if (cmd === 'about') {
     appendLine('Yash: 15, hacker-vampire, kho-kho enjoyer, chaos enthusiast.')
   } else if (cmd === 'projects') {
@@ -678,6 +690,59 @@ function handleCommand(cmd, raw) {
   }
 }
 
+let konamiSeq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a']
+let konamiIndex = 0
+const konamiMenu = document.getElementById('konami-menu')
+const konamiClose = document.getElementById('konami-close')
+
+function handleKonami(e) {
+  let key = e.key
+  if (key.length === 1) key = key.toLowerCase()
+  const expected = konamiSeq[konamiIndex]
+  if (key === expected) {
+    konamiIndex++
+    if (konamiIndex === konamiSeq.length) {
+      konamiIndex = 0
+      unlockKonami()
+    }
+  } else {
+    if (key === konamiSeq[0]) konamiIndex = 1
+    else konamiIndex = 0
+  }
+}
+
+function unlockKonami() {
+  if (!konamiMenu) return
+  konamiMenu.classList.remove('konami-hidden')
+  konamiMenu.style.display = 'flex'
+}
+
+function hideKonami() {
+  if (!konamiMenu) return
+  konamiMenu.classList.add('konami-hidden')
+  konamiMenu.style.display = 'none'
+}
+
+if (konamiClose) {
+  konamiClose.addEventListener('click', (e) => {
+    e.stopPropagation()
+    hideKonami()
+  })
+}
+
+if (konamiMenu) {
+  konamiMenu.addEventListener('click', (e) => {
+    if (e.target === konamiMenu) hideKonami()
+  })
+}
+
+window.addEventListener('load', () => {
+  applyStoredTheme()
+  if (konamiMenu) {
+    konamiMenu.classList.add('konami-hidden')
+    konamiMenu.style.display = 'none'
+  }
+})
 
 let statusIndex = 0
 function rotateStatus() {
