@@ -134,19 +134,20 @@ resetInactivity()
 document.addEventListener('mousemove', resetInactivity)
 document.addEventListener('keydown', resetInactivity)
 
-document.addEventListener('keydown', (e) => {
-  handleKonami(e)
+document.addEventListener('keydown', e => {
   handleGlobalKeys(e)
 })
 
 function handleGlobalKeys(e) {
-  if (isTyping(e)) return
   const k = e.key.toLowerCase()
-  if (k === 'b') randomBlooper()
-  if (k === 'y') showMini()
-  if (k === 'h') toggleHackerMode()
-  if (k === 'v') toggleVampireMode()
-  if (k === 'escape') hideKonami()
+  if (!isTyping(e)) {
+    if (k === 'b') randomBlooper()
+    if (k === 'y') showMini()
+    if (k === 'h') toggleHackerMode()
+    if (k === 'v') toggleVampireMode()
+    if (k === 'escape') hideMini()
+    if (e.ctrlKey && e.shiftKey && k === 'd') toggleDevPanel()
+  }
   if (snakeActive) {
     if (e.key === 'ArrowUp' || k === 'w') {
       if (snakeDir.y === 1) return
@@ -162,11 +163,10 @@ function handleGlobalKeys(e) {
       snakeDir = { x:1, y:0 }
     }
   }
-  if (e.ctrlKey && e.shiftKey && k === 'd') toggleDevPanel()
 }
 
 if (trailRoot) {
-  document.addEventListener('mousemove', (e) => {
+  document.addEventListener('mousemove', e => {
     const dot = document.createElement('div')
     dot.className = 'trail'
     dot.style.left = e.clientX + 'px'
@@ -375,7 +375,7 @@ function glitchAlert(msg) {
   box.style.color = '#ff3b59'
   box.style.padding = '20px 40px'
   box.style.fontFamily = 'monospace'
-  box.style.border = '2px solid '#ff3b59'
+  box.style.border = '2px solid #ff3b59'
   box.style.zIndex = 9999
   box.style.textShadow = '0 0 8px #ff3b59'
   box.style.pointerEvents = 'none'
@@ -398,10 +398,10 @@ function blueScreen() {
   document.body.appendChild(overlay)
   setTimeout(() => {
     overlay.style.opacity = '0'
-  }, 300)
+  }, 500)
   setTimeout(() => {
     overlay.remove()
-  }, 900)
+  }, 1200)
 }
 
 const THEME_KEY = 'yash-theme'
@@ -490,7 +490,7 @@ function hideMini() {
 
 if (yTrigger) yTrigger.addEventListener('click', showMini)
 if (miniClose) {
-  miniClose.addEventListener('click', (e) => {
+  miniClose.addEventListener('click', e => {
     e.stopPropagation()
     hideMini()
   })
@@ -639,9 +639,9 @@ function handleCommand(cmd, raw) {
   if (cmd === 'help') {
     appendLine('help: help | stats | cheer | about | projects | quote | matrix | talk | snake | snake stop | theme | hacker | vampire | bsod | clear')
   } else if (cmd === 'stats') {
-    appendLine('matches: 48 • wins: 34 • captaincies: 43')
+    appendLine('matches: 48 • wins: 34 • captaincies: 2')
   } else if (cmd === 'cheer') {
-    appendLine('You cheer loudly. Teammates respond with echo. But Yet yash cannot see you :(')
+    appendLine('You cheer loudly. Teammates respond with echo.')
   } else if (cmd === 'about') {
     appendLine('Yash: 15, hacker-vampire, kho-kho enjoyer, chaos enthusiast.')
   } else if (cmd === 'projects') {
@@ -690,60 +690,6 @@ function handleCommand(cmd, raw) {
   }
 }
 
-let konamiSeq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a']
-let konamiIndex = 0
-const konamiMenu = document.getElementById('konami-menu')
-const konamiClose = document.getElementById('konami-close')
-
-function handleKonami(e) {
-  let key = e.key
-  if (key.length === 1) key = key.toLowerCase()
-  const expected = konamiSeq[konamiIndex]
-  if (key === expected) {
-    konamiIndex++
-    if (konamiIndex === konamiSeq.length) {
-      konamiIndex = 0
-      unlockKonami()
-    }
-  } else {
-    if (key === konamiSeq[0]) konamiIndex = 1
-    else konamiIndex = 0
-  }
-}
-
-function unlockKonami() {
-  if (!konamiMenu) return
-  konamiMenu.classList.remove('konami-hidden')
-  konamiMenu.style.display = 'flex'
-}
-
-function hideKonami() {
-  if (!konamiMenu) return
-  konamiMenu.classList.add('konami-hidden')
-  konamiMenu.style.display = 'none'
-}
-
-if (konamiClose) {
-  konamiClose.addEventListener('click', (e) => {
-    e.stopPropagation()
-    hideKonami()
-  })
-}
-
-if (konamiMenu) {
-  konamiMenu.addEventListener('click', (e) => {
-    if (e.target === konamiMenu) hideKonami()
-  })
-}
-
-window.addEventListener('load', () => {
-  applyStoredTheme()
-  if (konamiMenu) {
-    konamiMenu.classList.add('konami-hidden')
-    konamiMenu.style.display = 'none'
-  }
-})
-
 let statusIndex = 0
 function rotateStatus() {
   if (!statusRotator) return
@@ -757,57 +703,4 @@ projectCards.forEach(card => {
   card.addEventListener('click', () => {
     if (window.innerWidth <= 980) card.classList.toggle('active')
   })
-})
-
-let konamiSeq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a']
-let konamiIndex = 0
-const konamiMenu = document.getElementById('konami-menu')
-const konamiClose = document.getElementById('konami-close')
-
-function handleKonami(e) {
-  let key = e.key
-  if (key.length === 1) key = key.toLowerCase()
-  const expected = konamiSeq[konamiIndex]
-  if (key === expected) {
-    konamiIndex++
-    if (konamiIndex === konamiSeq.length) {
-      konamiIndex = 0
-      unlockKonami()
-    }
-  } else {
-    if (key === konamiSeq[0]) konamiIndex = 1
-    else konamiIndex = 0
-  }
-}
-
-function unlockKonami() {
-  if (!konamiMenu) return
-  konamiMenu.classList.remove('konami-hidden')
-  konamiMenu.style.display = 'flex'
-}
-
-function hideKonami() {
-  if (!konamiMenu) return
-  konamiMenu.classList.add('konami-hidden')
-  konamiMenu.style.display = 'none'
-}
-
-if (konamiClose) {
-  konamiClose.addEventListener('click', (e) => {
-    e.stopPropagation()
-    hideKonami()
-  })
-}
-
-if (konamiMenu) {
-  konamiMenu.addEventListener('click', (e) => {
-    if (e.target === konamiMenu) hideKonami()
-  })
-}
-
-window.addEventListener('load', () => {
-  if (konamiMenu) {
-    konamiMenu.classList.add('konami-hidden')
-    konamiMenu.style.display = 'none'
-  }
 })
