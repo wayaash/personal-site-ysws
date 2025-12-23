@@ -418,6 +418,7 @@ tutorialOverlay.innerHTML=
 '<p>skills | resume | credits</p>'+
 '<hr>'+
 '<p><b>FUN STUFF</b></p>'+
+'<p>you need to close ternimal to use snake from either wasd or arrows</p>'+
 '<p>Snake eats real text from the page</p>'+
 '<p>Matrix reacts to chaos</p>'+
 '<p>Chaos increases unpredictability</p>'+
